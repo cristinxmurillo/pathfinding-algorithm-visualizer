@@ -45,7 +45,7 @@ class Grid:
         x = math.floor(position[0]/((self.size - self.padding)/ self.gridSize[0])) + 1
         y = math.floor(position[1]/((self.size - self.padding)/ self.gridSize[1])) + 1
 
-        if x > 10 or x < 1 and y > 10 or y < 1:
+        if (x > self.gridSize[0] or x < 1) or (y > self.gridSize[1] or y < 1):
             return False
 
         return(x,y)
@@ -73,7 +73,6 @@ if __name__ == "__main__":
         
         if selectingObstacles == True:
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
-            if position not in obstacles:
+            if position != False and position not in obstacles:
                 obstacles.append(position)
                 grid.fillPosition(position, (0,0,0))
-                print(obstacles)

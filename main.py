@@ -20,6 +20,6 @@ if __name__ == "__main__":
         
         if selectingObstacles == True:
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
-            if position not in obstacles:
+            if position != False and position not in obstacles:
                 obstacles.append(position)
-                print(obstacles)
+                grid.fillPosition(position, (0,0,0))
