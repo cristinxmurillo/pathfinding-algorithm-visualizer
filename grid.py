@@ -7,6 +7,7 @@ class Grid:
         self.screen = screen
         self.size = 600
         self.padding = 20
+        self.stepSize = (self.size - self.padding * 2)/self.gridSize[0]
         pygame.display.set_caption("Pathfinding algorithm visualizer")
      
     def getStepSizes(self):
@@ -48,7 +49,11 @@ class Grid:
             return False
 
         return(x,y)
-        
+
+    def fillPosition(self, position, color):
+        pygame.draw.rect(self.screen, color, [((position[0] - 1) * self.stepSize + self.padding), ((position[1] - 1) * self.stepSize  + self.padding), (self.stepSize), (self.stepSize) ] )
+        pygame.display.update()
+
 if __name__ == "__main__":
     screen = pygame.display.set_mode([800, 600])
     grid = Grid(screen, [10, 10])
@@ -70,4 +75,5 @@ if __name__ == "__main__":
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
             if position not in obstacles:
                 obstacles.append(position)
+                grid.fillPosition(position, (0,0,0))
                 print(obstacles)
