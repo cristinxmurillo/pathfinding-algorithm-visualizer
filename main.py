@@ -1,4 +1,5 @@
 from grid import Grid
+from algorithms import Algorithm, Djikstra
 import pygame
 
 if __name__ == "__main__":
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     deselecting = False
     selectingOrigin = False
     selectingGoal = False
-    djikstra = False
+    algorithm = False
 
     print('selecting obstacles')
 
@@ -31,9 +32,9 @@ if __name__ == "__main__":
                 if event.key == pygame.K_SPACE:
                     active = True
 
-            ##STATE SELECTION##
-            #State rotation from 
-            # Obstacle Selection -> Origin Selection -> Goal Selection -> Applying pathfinding algorithm -> Restart grid
+            ## STATE SELECTION ##
+            #  State rotation from 
+            #  Obstacle Selection -> Origin Selection -> Goal Selection -> Applying pathfinding algorithm -> Restart grid
             if event.type == pygame.KEYUP and active == True:
                 if event.key == pygame.K_SPACE:
                     active = False
@@ -47,13 +48,13 @@ if __name__ == "__main__":
                         print('selecting goal')
                     elif selectingGoal == True:
                         selectingGoal = False
-                        djikstra = True
+                        algorithm = True
                         print('applying algorithm')
                         print("Obstacles: ", obstacles)
                         print("Origin: ", origin)
                         print("Goal: ", goal)
-                    elif djikstra == True:
-                        djikstra = False
+                    elif algorithm == True:
+                        algorithm = False
                         print('restarting...')
                         grid.drawGrid()
                         obstacles = []
@@ -105,3 +106,7 @@ if __name__ == "__main__":
                 if position in goal:
                     grid.fillPosition(position, (6,213,193))
                     goal.remove(position)
+        elif algorithm:
+            djikstra = Djikstra(10, [], [5,5], [10,10])
+            for coordenate in djikstra.run():
+                grid.fillPosition(coordenate, (173, 81, 78))
