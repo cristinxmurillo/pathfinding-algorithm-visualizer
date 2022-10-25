@@ -1,3 +1,4 @@
+from numpy import empty
 import pygame
 import math
 
@@ -27,7 +28,7 @@ class Grid:
         
         self.screen.fill(white)
 
-        pygame.draw.rect(self.screen, blue, [self.padding, self.padding, (self.size - self.padding * 2),  (self.size - self.padding * 2)])
+        pygame.draw.rect(self.screen, (6,213,193), [self.padding, self.padding, (self.size - self.padding * 2),  (self.size - self.padding * 2)])
 
         # grid drawing
         # vertical lines 
@@ -51,7 +52,7 @@ class Grid:
         return(x,y)
 
     def fillPosition(self, position, color):
-        pygame.draw.rect(self.screen, color, [((position[0] - 1) * self.stepSize + self.padding), ((position[1] - 1) * self.stepSize  + self.padding), (self.stepSize), (self.stepSize) ] )
+        pygame.draw.rect(self.screen, color, [((position[0] - 1) * self.stepSize + self.padding) + 1, ((position[1] - 1) * self.stepSize  + self.padding) + 1, (self.stepSize) - 1, (self.stepSize) - 1] )
         pygame.display.update()
 
 if __name__ == "__main__":
@@ -60,19 +61,99 @@ if __name__ == "__main__":
     grid.drawGrid()
 
     obstacles = []
-    selectingObstacles = False
+    origin = []
+    goal = []
+
+    selectingObstacles = True
+    activeSelecting = False
+    deselecting = False
+    selectingOrigin = False
+    selectingGoal = False
+    djikstra = False
+
+    print('selecting obstacles')
+
+    active = False
 
     while(True):
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            selectingObstacles = True
-        if event.type == pygame.MOUSEBUTTONUP:
-            selectingObstacles = False
         
-        if selectingObstacles == True:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    active = True
+
+            if event.type == pygame.KEYUP and active == True:
+                if event.key == pygame.K_SPACE:
+                    active = False
+                    if selectingObstacles == True:
+                        selectingObstacles = False
+                        selectingOrigin = True
+                        print('selecting origin')
+                    elif selectingOrigin == True: 
+                        selectingOrigin = False
+                        selectingGoal = True
+                        print('selecting goal')
+                    elif selectingGoal == True:
+                        selectingGoal = False
+                        djikstra = True
+                        print('applying algorithm')
+                        print("Obstacles: ", obstacles)
+                        print("Origin: ", origin)
+                        print("Goal: ", goal)
+                    elif djikstra == True:
+                        djikstra = False
+                        print('restarting...')
+                        grid.drawGrid()
+                        obstacles = []
+                        origin = []
+                        goal = []
+                        #restart grid
+                        selectingObstacles = True
+                        print('\n\nselecting obstacles')
+                        
+            if selectingObstacles or selectingGoal or selectingOrigin:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        activeSelecting = True
+                    elif event.button == 3:
+                        deselecting = True
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:    
+                        activeSelecting = False
+                    elif event.button == 3:
+                        deselecting = False
+        
+        if selectingObstacles == True: 
+            if activeSelecting == True:
+                position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+                if position != False and position not in obstacles:
+                    obstacles.append(position)
+                    grid.fillPosition(position, (0,0,0))
+            elif deselecting == True: 
+                position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+                if position != False and position in obstacles:
+                    obstacles.remove(position)
+                    grid.fillPosition(position, (6,213,193))
+
+        if selectingOrigin == True:
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
-            if position != False and position not in obstacles:
-                obstacles.append(position)
-                grid.fillPosition(position, (0,0,0))
+            if activeSelecting == True and position != False and origin == [] and position not in obstacles:
+                origin.append(position)
+                grid.fillPosition(position, (173, 122, 43))
+            elif deselecting == True:
+                if position in origin:
+                    grid.fillPosition(position, (6,213,193))
+                    origin.remove(position)
+
+        if selectingGoal == True:
+            position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+            if activeSelecting == True and position != False and goal == [] and position not in obstacles:
+                goal.append(position)
+                grid.fillPosition(position, (173, 81, 78))
+            elif deselecting == True:
+                if position in goal:
+                    grid.fillPosition(position, (6,213,193))
+                    goal.remove(position)
