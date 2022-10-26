@@ -84,35 +84,38 @@ if __name__ == "__main__":
         if selectingObstacles == True: 
             if activeSelecting == True:
                 position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
-                position = [position[0], position[1]]
+                if position != False: position = [position[0], position[1]]
                 if position != False and position not in obstacles:
                     obstacles.append(position)
                     grid.fillPosition(position, (0,0,0))
             elif deselecting == True: 
                 position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+                if position != False: position = [position[0], position[1]]
                 if position != False and position in obstacles:
                     obstacles.remove(position)
                     grid.fillPosition(position, (6,213,193))
         elif selectingOrigin == True:
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+            if position != False: position = [position[0], position[1]]
             if activeSelecting == True and position != False and origin == [] and position not in obstacles:
-                origin.append(position)
-                grid.fillPosition(position, (173, 122, 43))
+                origin = position
+                grid.fillPosition(origin, (173, 122, 43))
             elif deselecting == True:
-                if position in origin:
-                    grid.fillPosition(position, (6,213,193))
-                    origin.remove(position)
+                if position == origin:
+                    grid.fillPosition(origin, (6,213,193))
+                    origin = []
         elif selectingGoal == True:
             position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+            if position != False: position = [position[0], position[1]]
             if activeSelecting == True and position != False and goal == [] and position not in obstacles:
-                goal.append(position)
-                grid.fillPosition(position, (173, 81, 78))
+                goal = position
+                grid.fillPosition(goal, (173, 81, 78))
             elif deselecting == True:
-                if position in goal:
-                    grid.fillPosition(position, (6,213,193))
-                    goal.remove(position)
+                if position == goal:
+                    grid.fillPosition(goal, (6,213,193))
+                    goal = []
         elif algorithm:
-            djikstra = Djikstra(grid.gridSize[0], obstacles, origin[0], [10,10])
+            djikstra = Djikstra(grid.gridSize[0], obstacles, origin, [10,10])
             for coordenate in djikstra.run():
                 grid.fillPosition(coordenate, (173, 81, 78))
                 time.sleep(0.05)
