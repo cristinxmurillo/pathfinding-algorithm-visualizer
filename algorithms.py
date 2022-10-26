@@ -21,7 +21,7 @@ class Djikstra(Algorithm):
             currentNeighbors = [[current[0] + 1, current[1]], [current[0] - 1, current[1]], [current[0], current[1] + 1],[current[0], current[1] - 1]]
             for neighbor in currentNeighbors:
                 if (neighbor[0] >= 1 and neighbor[0] <= self.gridSize) and (neighbor[1] >= 1 and neighbor[1] <= self.gridSize):
-                    if neighbor not in visited and neighbor not in Q :
+                    if neighbor not in visited and neighbor not in Q and neighbor not in self.obstacles:
                         Q.append(neighbor)
             
             visited.append(Q.pop(0))
