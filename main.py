@@ -1,6 +1,7 @@
 from grid import Grid
 from algorithms import Algorithm, Djikstra
 import pygame
+import time
 
 if __name__ == "__main__":
     screen = pygame.display.set_mode([800, 600])
@@ -17,6 +18,7 @@ if __name__ == "__main__":
     selectingOrigin = False
     selectingGoal = False
     algorithm = False
+    finished = False
 
     print('selecting obstacles')
 
@@ -55,11 +57,13 @@ if __name__ == "__main__":
                         print("Goal: ", goal)
                     elif algorithm == True:
                         algorithm = False
+                    elif finished == True:
                         print('restarting...')
                         grid.drawGrid()
                         obstacles = []
                         origin = []
                         goal = []
+                        finished = False
                         selectingObstacles = True
                         print('\n\nselecting obstacles')
 
@@ -80,6 +84,7 @@ if __name__ == "__main__":
         if selectingObstacles == True: 
             if activeSelecting == True:
                 position = grid.findMousePositionInGrid(pygame.mouse.get_pos())
+                position = [position[0], position[1]]
                 if position != False and position not in obstacles:
                     obstacles.append(position)
                     grid.fillPosition(position, (0,0,0))
@@ -107,6 +112,9 @@ if __name__ == "__main__":
                     grid.fillPosition(position, (6,213,193))
                     goal.remove(position)
         elif algorithm:
-            djikstra = Djikstra(10, [], [5,5], [10,10])
+            djikstra = Djikstra(grid.gridSize[0], obstacles, origin[0], [10,10])
             for coordenate in djikstra.run():
                 grid.fillPosition(coordenate, (173, 81, 78))
+                time.sleep(0.05)
+            algorithm =  False
+            finished = True
