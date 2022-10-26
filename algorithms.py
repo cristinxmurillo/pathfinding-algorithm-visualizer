@@ -24,6 +24,9 @@ class Djikstra(Algorithm):
                     if neighbor not in visited and neighbor not in Q and neighbor not in self.obstacles:
                         Q.append(neighbor)
             
+            if Q[0] == self.goal:
+                return visited
+            
             visited.append(Q.pop(0))
 
         return visited
