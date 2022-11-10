@@ -115,8 +115,9 @@ if __name__ == "__main__":
                     grid.fillPosition(goal, (6,213,193))
                     goal = []
         elif algorithm:
-            djikstra = Djikstra(grid.gridSize[0], obstacles, origin, [10,10])
-            for coordenate in djikstra.run():
+            djikstra = Djikstra(grid.gridSize[0], obstacles, origin, goal)
+            visited = djikstra.run()
+            for coordenate in visited:
                 grid.fillPosition(coordenate, (173, 81, 78))
                 time.sleep(0.05)
             algorithm =  False

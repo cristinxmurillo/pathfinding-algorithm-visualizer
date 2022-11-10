@@ -18,7 +18,7 @@ class Djikstra(Algorithm):
 
         while Q != []:
             current = Q[0]
-            currentNeighbors = [[current[0] + 1, current[1]], [current[0] - 1, current[1]], [current[0], current[1] + 1],[current[0], current[1] - 1]]
+            currentNeighbors = [[current[0] + 1, current[1]], [current[0] - 1, current[1]], [current[0], current[1] + 1], [current[0], current[1] - 1]]
             for neighbor in currentNeighbors:
                 if (neighbor[0] >= 1 and neighbor[0] <= self.gridSize) and (neighbor[1] >= 1 and neighbor[1] <= self.gridSize):
                     if neighbor not in visited and neighbor not in Q and neighbor not in self.obstacles:
@@ -28,11 +28,12 @@ class Djikstra(Algorithm):
                 return visited
             
             visited.append(Q.pop(0))
-
         return visited
 
 
 if __name__ == "__main__": 
-    djikstra = Djikstra(10, [], [5,5], [10,10])
-    print(len(djikstra.run()))
+    obstacles = [[2, 9], [3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9]]
+    origin = [5, 10]
+    goal = [5, 8]
+    print(Djikstra(10, obstacles, origin, goal).run())
 
